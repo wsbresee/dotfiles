@@ -1,6 +1,14 @@
 # Willy's Mac Setup
 
-This sets up a new Mac exactly the way I have mine — terminal, editor, apps, everything.
+This sets up a new Mac exactly the way I have mine — terminal, editor, shell, apps, everything.
+
+**What gets installed:**
+- **Homebrew** — Mac package manager
+- **iTerm2** color theme (palenight)
+- **tmux** — terminal multiplexer with custom keybindings
+- **vim** — text editor with plugins and palenight colors
+- **zsh + oh-my-zsh** — shell with the common theme and autosuggestions
+- **Spotify** and **Amethyst** (window manager)
 
 ---
 
