@@ -37,6 +37,25 @@ symlink() {
 
 symlink .tmux.conf
 symlink .vimrc
+symlink .zshrc
+
+# ── oh-my-zsh ─────────────────────────────────────────────────────────────────
+if [ ! -d ~/.oh-my-zsh ]; then
+  echo "==> Installing oh-my-zsh..."
+  RUNZSH=no CHSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+fi
+
+echo "==> Installing zsh-autosuggestions..."
+if [ ! -d ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions ]; then
+  git clone https://github.com/zsh-users/zsh-autosuggestions \
+    ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+fi
+
+echo "==> Installing common theme..."
+if [ ! -f ~/.oh-my-zsh/custom/themes/common.zsh-theme ]; then
+  curl -sL https://raw.githubusercontent.com/jackharrisonsherlock/common/master/common.zsh-theme \
+    -o ~/.oh-my-zsh/custom/themes/common.zsh-theme
+fi
 
 # ── TPM ───────────────────────────────────────────────────────────────────────
 if [ ! -d ~/.tmux/plugins/tpm ]; then
