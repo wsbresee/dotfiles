@@ -2,7 +2,7 @@
 set -e
 
 DOTFILES_REPO="https://github.com/wsbresee/dotfiles"
-DOTFILES_DIR="$HOME/dotfiles"
+DOTFILES_DIR="$HOME/projects/dotfiles"
 
 echo "==> Starting setup..."
 
