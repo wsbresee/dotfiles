@@ -1,9 +1,16 @@
 #!/usr/bin/env bash
 set -e
 
-DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+DOTFILES_REPO="https://github.com/wsbresee/dotfiles"
+DOTFILES_DIR="$HOME/dotfiles"
 
 echo "==> Starting setup..."
+
+# ── Clone dotfiles repo ───────────────────────────────────────────────────────
+if [ ! -d "$DOTFILES_DIR/.git" ]; then
+  echo "==> Cloning dotfiles..."
+  git clone "$DOTFILES_REPO" "$DOTFILES_DIR"
+fi
 
 # ── Homebrew ──────────────────────────────────────────────────────────────────
 if ! command -v brew &>/dev/null; then
