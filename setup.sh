@@ -6,10 +6,13 @@ DOTFILES_DIR="$HOME/projects/dotfiles"
 
 echo "==> Starting setup..."
 
-# ── Clone dotfiles repo ───────────────────────────────────────────────────────
+# ── Clone or update dotfiles repo ────────────────────────────────────────────
 if [ ! -d "$DOTFILES_DIR/.git" ]; then
   echo "==> Cloning dotfiles..."
   git clone "$DOTFILES_REPO" "$DOTFILES_DIR"
+else
+  echo "==> Updating dotfiles..."
+  git -C "$DOTFILES_DIR" pull --ff-only
 fi
 
 # ── Homebrew ──────────────────────────────────────────────────────────────────
