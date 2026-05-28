@@ -28,6 +28,8 @@ bash <(curl -sL https://raw.githubusercontent.com/wsbresee/dotfiles/main/setup.s
 
 This will automatically install everything. It may take a few minutes. When it's done you'll see a "Done!" message.
 
+Re-running the same command later will pull the latest dotfiles from this repo and re-apply them, so your config stays up to date.
+
 ### Step 3 — A few things to do manually
 
 These two steps have to be done by hand:
