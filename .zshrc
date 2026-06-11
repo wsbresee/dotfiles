@@ -17,6 +17,11 @@ plugins=(git zsh-autosuggestions)
 
 source $ZSH/oh-my-zsh.sh
 
+# Compute autosuggestions synchronously. In async mode the greyed-out
+# suggestion can lag a keystroke behind the buffer, so the Tab-accept
+# widget below would occasionally append a stale suffix (proj -> projjects).
+unset ZSH_AUTOSUGGEST_USE_ASYNC
+
 # vi mode
 export KEYTIMEOUT=40
 set -o vi
