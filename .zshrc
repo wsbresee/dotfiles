@@ -17,9 +17,8 @@ plugins=(git zsh-autosuggestions)
 
 source $ZSH/oh-my-zsh.sh
 
-# Compute autosuggestions synchronously. In async mode the greyed-out
-# suggestion can lag a keystroke behind the buffer, so the Tab-accept
-# widget below would occasionally append a stale suffix (proj -> projjects).
+# Compute autosuggestions synchronously so the greyed-out suggestion tracks
+# the buffer as closely as possible (async can lag a keystroke behind).
 unset ZSH_AUTOSUGGEST_USE_ASYNC
 
 # vi mode
@@ -27,13 +26,27 @@ export KEYTIMEOUT=40
 set -o vi
 bindkey -M viins 'jk' vi-cmd-mode
 
-# Accept zsh-autosuggestion with Tab if one is showing; otherwise normal completion
+# Accept zsh-autosuggestion with Tab if one is showing; otherwise normal completion.
+#
+# Re-fetch the suggestion instead of trusting $POSTDISPLAY: when keys arrive
+# faster than zle processes them (common here — the jk binding makes zsh hold
+# back every j to wait for a possible k), zsh-autosuggestions restores a stale
+# suggestion computed for a shorter buffer, and accepting it blindly doubles
+# the overlap (proj -> projjects). The leading underscore in the widget name
+# is load-bearing: it stops zsh-autosuggestions from wrapping this widget in
+# its modify handler, which blanks $POSTDISPLAY before the body runs.
 _tab_or_autosuggest() {
+  local suggestion
   if [[ -n "$POSTDISPLAY" ]]; then
-    zle autosuggest-accept
-  else
-    zle expand-or-complete
+    _zsh_autosuggest_fetch_suggestion "$BUFFER"
+    if (( $#suggestion > $#BUFFER )) && [[ "${suggestion:0:$#BUFFER}" == "$BUFFER" ]]; then
+      POSTDISPLAY="${suggestion:$#BUFFER}"
+      zle autosuggest-accept
+      return
+    fi
+    POSTDISPLAY=""
   fi
+  zle expand-or-complete
 }
 zle -N _tab_or_autosuggest
 bindkey '^I' _tab_or_autosuggest
