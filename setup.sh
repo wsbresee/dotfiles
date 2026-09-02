@@ -5,18 +5,19 @@ DOTFILES_REPO="https://github.com/wsbresee/dotfiles"
 DOTFILES_DIR="$HOME/projects/dotfiles"
 
 # ── Options ───────────────────────────────────────────────────────────────────
-# --no-apps skips everything that downloads a GUI app or drops files outside the
-# dotfiles/CLI world: Homebrew casks (Amethyst et al.) and the iTerm2 theme.
+# --no-apps skips everything that touches a GUI app or drops files outside the
+# dotfiles/CLI world: Homebrew casks (Amethyst et al.) and the iTerm2 prefs.
 # Handy on a work machine, in a VM, or over SSH where /Applications is off limits.
 SKIP_APPS="${SKIP_APPS:-0}"
+ITERM_WAS_RUNNING=0
 
 usage() {
   cat <<'USAGE'
 Usage: setup.sh [--no-apps]
 
-  --no-apps   Skip GUI app installs (Homebrew casks) and the iTerm2 theme
-              download. CLI tools, dotfile symlinks, oh-my-zsh, TPM and
-              Vundle are still set up. Same as SKIP_APPS=1 setup.sh
+  --no-apps   Skip GUI app installs (Homebrew casks) and the iTerm2
+              preferences import. CLI tools, dotfile symlinks, oh-my-zsh,
+              TPM and Vundle are still set up. Same as SKIP_APPS=1 setup.sh
   -h, --help  Show this help
 USAGE
 }
@@ -123,11 +124,30 @@ if [ "$(ls ~/.vim/bundle | wc -l)" -le 1 ]; then
   vim +PluginInstall +qall 2>/dev/null || true
 fi
 
-# ── iTerm2 palenight theme ────────────────────────────────────────────────────
-if [ "$SKIP_APPS" = 0 ] && [ ! -f ~/Downloads/palenight.itermcolors ]; then
-  echo "==> Downloading palenight iTerm2 theme..."
-  curl -sL "https://raw.githubusercontent.com/JonathanSpeek/palenight-iterm2/master/palenight.itermcolors" \
-    -o ~/Downloads/palenight.itermcolors
+# ── iTerm2 preferences ────────────────────────────────────────────────────────
+# The exported plist carries the whole setup: palenight colors, black
+# background, Monaco 12, keybindings, profiles. No manual import needed.
+ITERM_PLIST="$DOTFILES_DIR/iterm2/com.googlecode.iterm2.plist"
+ITERM_LIVE="$HOME/Library/Preferences/com.googlecode.iterm2.plist"
+
+if [ "$SKIP_APPS" = 0 ] && [ -f "$ITERM_PLIST" ]; then
+  if pgrep -x iTerm2 >/dev/null 2>&1; then
+    # iTerm2 rewrites its prefs from memory on quit, which would silently
+    # undo the import. Don't touch them while it's running.
+    ITERM_WAS_RUNNING=1
+    echo "==> iTerm2 is running — skipping preferences import."
+    echo "    Quit iTerm2 and re-run this script (or run it from Terminal.app)."
+  else
+    echo "==> Importing iTerm2 preferences..."
+    if [ -f "$ITERM_LIVE" ] && [ ! -f "$ITERM_LIVE.bak" ]; then
+      cp "$ITERM_LIVE" "$ITERM_LIVE.bak"
+      echo "    Backed up existing prefs → $ITERM_LIVE.bak"
+    fi
+    defaults import com.googlecode.iterm2 "$ITERM_PLIST"
+    # cfprefsd caches prefs; without this the import is lost on next read.
+    killall cfprefsd 2>/dev/null || true
+    echo "    Imported. Colors, font and keybindings are set."
+  fi
 fi
 
 echo ""
@@ -137,7 +157,8 @@ if [ "$SKIP_APPS" = 1 ]; then
   echo "GUI app setup was skipped (--no-apps); no manual steps remaining."
 else
   echo "Manual steps remaining:"
-  echo "  1. iTerm2: Preferences → Profiles → Colors → Color Presets → Import → ~/Downloads/palenight.itermcolors"
-  echo "  2. iTerm2: Set background color to black (Preferences → Profiles → Colors → Background)"
-  echo "  3. Amethyst: Open and grant Accessibility permissions in System Settings"
+  if [ "$ITERM_WAS_RUNNING" = 1 ]; then
+    echo "  - iTerm2: quit it and re-run this script to apply the saved preferences"
+  fi
+  echo "  - Amethyst: open it and grant Accessibility permissions in System Settings"
 fi
