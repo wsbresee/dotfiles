@@ -8,7 +8,7 @@ This sets up a new Mac exactly the way I have mine — terminal, editor, shell, 
 - **tmux** — terminal multiplexer with custom keybindings
 - **vim** — text editor with plugins and palenight colors
 - **zsh + oh-my-zsh** — shell with the common theme and autosuggestions
-- **Spotify** and **Amethyst** (window manager)
+- **Amethyst** (window manager)
 
 ---
 

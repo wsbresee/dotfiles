@@ -29,7 +29,6 @@ brew_install tmux
 brew_install vim
 brew_install the_silver_searcher
 brew_install jq
-brew_cask_install spotify
 brew_cask_install amethyst
 
 # ── Symlink dotfiles ──────────────────────────────────────────────────────────
