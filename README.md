@@ -30,6 +30,19 @@ This will automatically install everything. It may take a few minutes. When it's
 
 Re-running the same command later will pull the latest dotfiles from this repo and re-apply them, so your config stays up to date.
 
+**Terminal-only install:** add `--no-apps` to skip anything that installs a GUI
+app or downloads files to your Downloads folder — the Homebrew casks (Amethyst)
+and the iTerm2 color theme. Everything else (tmux, vim, zsh + oh-my-zsh, the
+dotfile symlinks, plugins) is still set up. Useful on a work machine or over SSH
+where you can't touch the Applications folder.
+
+```
+bash <(curl -sL https://raw.githubusercontent.com/wsbresee/dotfiles/main/setup.sh) --no-apps
+```
+
+`SKIP_APPS=1` as an environment variable does the same thing. With `--no-apps`
+you can skip Step 3 below — there's nothing to configure by hand.
+
 ### Step 3 — A few things to do manually
 
 These two steps have to be done by hand:

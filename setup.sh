@@ -4,7 +4,36 @@ set -e
 DOTFILES_REPO="https://github.com/wsbresee/dotfiles"
 DOTFILES_DIR="$HOME/projects/dotfiles"
 
+# ── Options ───────────────────────────────────────────────────────────────────
+# --no-apps skips everything that downloads a GUI app or drops files outside the
+# dotfiles/CLI world: Homebrew casks (Amethyst et al.) and the iTerm2 theme.
+# Handy on a work machine, in a VM, or over SSH where /Applications is off limits.
+SKIP_APPS="${SKIP_APPS:-0}"
+
+usage() {
+  cat <<'USAGE'
+Usage: setup.sh [--no-apps]
+
+  --no-apps   Skip GUI app installs (Homebrew casks) and the iTerm2 theme
+              download. CLI tools, dotfile symlinks, oh-my-zsh, TPM and
+              Vundle are still set up. Same as SKIP_APPS=1 setup.sh
+  -h, --help  Show this help
+USAGE
+}
+
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --no-apps|--skip-apps) SKIP_APPS=1 ;;
+    -h|--help) usage; exit 0 ;;
+    *) echo "Unknown option: $1" >&2; usage >&2; exit 1 ;;
+  esac
+  shift
+done
+
 echo "==> Starting setup..."
+if [ "$SKIP_APPS" = 1 ]; then
+  echo "==> --no-apps: skipping GUI app installs"
+fi
 
 # ── Clone or update dotfiles repo ────────────────────────────────────────────
 if [ ! -d "$DOTFILES_DIR/.git" ]; then
@@ -22,7 +51,13 @@ if ! command -v brew &>/dev/null; then
 fi
 
 brew_install()      { brew list --formula "$1" &>/dev/null || brew install "$1"; }
-brew_cask_install() { brew list --cask    "$1" &>/dev/null || brew install --cask "$1"; }
+brew_cask_install() {
+  if [ "$SKIP_APPS" = 1 ]; then
+    echo "    Skipping cask $1 (--no-apps)"
+    return 0
+  fi
+  brew list --cask "$1" &>/dev/null || brew install --cask "$1"
+}
 
 echo "==> Installing brew packages..."
 brew_install tmux
@@ -89,7 +124,7 @@ if [ "$(ls ~/.vim/bundle | wc -l)" -le 1 ]; then
 fi
 
 # ── iTerm2 palenight theme ────────────────────────────────────────────────────
-if [ ! -f ~/Downloads/palenight.itermcolors ]; then
+if [ "$SKIP_APPS" = 0 ] && [ ! -f ~/Downloads/palenight.itermcolors ]; then
   echo "==> Downloading palenight iTerm2 theme..."
   curl -sL "https://raw.githubusercontent.com/JonathanSpeek/palenight-iterm2/master/palenight.itermcolors" \
     -o ~/Downloads/palenight.itermcolors
@@ -98,7 +133,11 @@ fi
 echo ""
 echo "==> Done!"
 echo ""
-echo "Manual steps remaining:"
-echo "  1. iTerm2: Preferences → Profiles → Colors → Color Presets → Import → ~/Downloads/palenight.itermcolors"
-echo "  2. iTerm2: Set background color to black (Preferences → Profiles → Colors → Background)"
-echo "  3. Amethyst: Open and grant Accessibility permissions in System Settings"
+if [ "$SKIP_APPS" = 1 ]; then
+  echo "GUI app setup was skipped (--no-apps); no manual steps remaining."
+else
+  echo "Manual steps remaining:"
+  echo "  1. iTerm2: Preferences → Profiles → Colors → Color Presets → Import → ~/Downloads/palenight.itermcolors"
+  echo "  2. iTerm2: Set background color to black (Preferences → Profiles → Colors → Background)"
+  echo "  3. Amethyst: Open and grant Accessibility permissions in System Settings"
+fi
