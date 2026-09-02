@@ -4127,20 +4127,6 @@
 		<string>3.5.14</string>
 		<string>3.5.13</string>
 	</array>
-	<key>NoSyncFrame_SessionsPreferences</key>
-	<dict>
-		<key>screenFrame</key>
-		<string>{{-1920, 37}, {1920, 1080}}</string>
-		<key>topLeft</key>
-		<string>{-1263, 985}</string>
-	</dict>
-	<key>NoSyncFrame_SharedPreferences</key>
-	<dict>
-		<key>screenFrame</key>
-		<string>{{0, 0}, {1470, 956}}</string>
-		<key>topLeft</key>
-		<string>{273, 714}</string>
-	</dict>
 	<key>NoSyncIgnoreSystemWindowRestoration</key>
 	<true/>
 	<key>NoSyncLastOSVersion</key>
@@ -5009,15 +4995,6 @@
 	<integer>1</integer>
 	<key>NoSyncRestoreWindowsCount</key>
 	<integer>0</integer>
-	<key>NoSyncSavedWindowPositions</key>
-	<dict>
-		<key>0</key>
-		<string>{0, 923}</string>
-		<key>1</key>
-		<string>{0, 923}</string>
-		<key>2</key>
-		<string>{735, 923}</string>
-	</dict>
 	<key>NoSyncTipOfTheDayEligibilityBeganTime</key>
 	<string>704905955.937556</string>
 	<key>NoSyncUserHasSelectedCommand</key>

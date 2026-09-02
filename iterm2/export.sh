@@ -10,7 +10,8 @@ DEST="$(cd "$(dirname "$0")" && pwd)/com.googlecode.iterm2.plist"
 defaults export com.googlecode.iterm2 "$DEST"
 
 # Drop keys that describe this Mac rather than the settings: window positions
-# (wrong on a different display), the install's UUID, crash-report state.
+# (wrong on a different display — these record real screen coordinates, some
+# negative for a second monitor), the install's UUID, crash-report state.
 python3 - "$DEST" <<'PY'
 import plistlib, sys
 
@@ -20,6 +21,8 @@ with open(path, 'rb') as f:
 
 def machine_local(key):
     return (key.startswith('NSWindow Frame ')
+            or key.startswith('NoSyncFrame_')
+            or key == 'NoSyncSavedWindowPositions'
             or key == 'NoSyncInstallationId'
             or key.startswith('UKCrashReporter')
             or key.startswith('NSNav'))
