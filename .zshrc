@@ -83,3 +83,22 @@ _auto_venv() {
 autoload -U add-zsh-hook
 add-zsh-hook chpwd _auto_venv
 _auto_venv   # run once for the shell's starting directory
+
+# ---------------------------------------------------------------------------
+# Claude Code: per-directory MCP scope
+#
+# Drop a .claude/mcp.json into a repo to pin exactly which MCP servers load
+# there. `{"mcpServers":{}}` loads none, which keeps the claude.ai account
+# connectors (~4-5k tokens of tool names) out of repos that never use them.
+# Repos with no .claude/mcp.json get the full account set, unchanged.
+#
+# Escape hatch: `command claude ...` always bypasses this.
+# ---------------------------------------------------------------------------
+claude() {
+  local cfg="${PWD}/.claude/mcp.json"
+  if [[ -f "$cfg" ]]; then
+    command claude --strict-mcp-config --mcp-config "$cfg" "$@"
+  else
+    command claude "$@"
+  fi
+}
