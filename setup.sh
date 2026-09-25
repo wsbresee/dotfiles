@@ -124,6 +124,35 @@ if [ "$(ls ~/.vim/bundle | wc -l)" -le 1 ]; then
   vim +PluginInstall +qall 2>/dev/null || true
 fi
 
+# ── Claude Code hooks ─────────────────────────────────────────────────────────
+# claude/hooks.json wires claude/tmux-tab.sh into every Claude Code session so
+# tmux windows get a short name and a working/waiting icon. It is merged into
+# ~/.claude/settings.json rather than symlinked: that file also holds settings
+# that belong to this machine (model, plugins), not to the repo. Re-running
+# replaces the previous copy of our hooks and leaves any others alone.
+CLAUDE_SETTINGS="$HOME/.claude/settings.json"
+CLAUDE_HOOKS="$DOTFILES_DIR/claude/hooks.json"
+
+if [ -f "$CLAUDE_HOOKS" ]; then
+  echo "==> Installing Claude Code hooks..."
+  mkdir -p "$HOME/.claude"
+  [ -s "$CLAUDE_SETTINGS" ] || echo '{}' > "$CLAUDE_SETTINGS"
+  CLAUDE_SETTINGS_TMP="$(mktemp)"
+  jq --argjson add "$(sed "s|__DOTFILES__|$DOTFILES_DIR|g" "$CLAUDE_HOOKS")" '
+    def ours: (.hooks // []) | any(.command // "" | contains("/claude/tmux-tab.sh"));
+    .hooks = (
+      ((.hooks // {})
+        | with_entries(.value |= map(select(ours | not)))
+        | with_entries(select(.value | length > 0))) as $kept
+      | reduce ($add.hooks | to_entries[]) as $e
+          ($kept; .[$e.key] = ((.[$e.key] // []) + $e.value))
+    )' "$CLAUDE_SETTINGS" > "$CLAUDE_SETTINGS_TMP" \
+    && mv -f "$CLAUDE_SETTINGS_TMP" "$CLAUDE_SETTINGS" \
+    && echo "    $CLAUDE_SETTINGS → hooks from $CLAUDE_HOOKS" \
+    || echo "    Could not merge hooks; $CLAUDE_SETTINGS left untouched"
+  rm -f "$CLAUDE_SETTINGS_TMP"
+fi
+
 # ── iTerm2 preferences ────────────────────────────────────────────────────────
 # The exported plist carries the whole setup: palenight colors, black
 # background, Monaco 12, keybindings, profiles. No manual import needed.

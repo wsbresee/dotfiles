@@ -1,0 +1,136 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "__DOTFILES__/claude/tmux-tab.sh SessionStart",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "__DOTFILES__/claude/tmux-tab.sh UserPromptSubmit",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "__DOTFILES__/claude/tmux-tab.sh PostToolUse",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "__DOTFILES__/claude/tmux-tab.sh PostToolUseFailure",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "__DOTFILES__/claude/tmux-tab.sh PermissionRequest",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PermissionDenied": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "__DOTFILES__/claude/tmux-tab.sh PermissionDenied",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Elicitation": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "__DOTFILES__/claude/tmux-tab.sh Elicitation",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "ElicitationResult": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "__DOTFILES__/claude/tmux-tab.sh ElicitationResult",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "__DOTFILES__/claude/tmux-tab.sh Notification",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "__DOTFILES__/claude/tmux-tab.sh Stop",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "StopFailure": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "__DOTFILES__/claude/tmux-tab.sh StopFailure",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "__DOTFILES__/claude/tmux-tab.sh SessionEnd",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -81,4 +81,40 @@ is actually a preference (profiles, colors, font, keybindings) is kept.
 
 ---
 
+## Claude Code tabs in tmux
+
+Every tmux window running Claude Code shows a short name for what that
+session is about and an icon for whether Claude is busy or waiting on you:
+
+```
+0 ○ Tmux tab labels | 1 ● Fix login bug | 2 zsh
+```
+
+- **○ (palenight blue)** — Claude is working.
+- **● (palenight green)** — Claude is finished and waiting for you: it ended
+  its turn, wants a permission answer, or hit an error.
+
+The name is Claude Code's own session title (the one it puts in the terminal
+title bar, and that `/rename` overrides), kept to four words. Longer titles
+are condensed once by a quick headless Haiku call in the background and
+cached in `~/.cache/claude-tmux-tab`, so nothing ever blocks the session.
+Before the first prompt the window is named after the directory.
+
+Details worth knowing:
+
+- `/rename Some name` in Claude pins the window name to whatever you typed.
+- A window you renamed yourself before launching Claude keeps its name and
+  only gains the icon.
+- When Claude exits the window goes back to tmux's automatic naming.
+- `CLAUDE_TMUX_TAB=0 claude` turns it all off for one session.
+
+How it works: `claude/tmux-tab.sh` is a Claude Code hook that runs on
+session start, prompt submit, tool completion, permission prompts, turn end
+and exit. It stores the state in a `@claude_state` window option and
+`.tmux.conf` renders that as the icon. `setup.sh` merges `claude/hooks.json`
+into `~/.claude/settings.json` (that file is not symlinked, since it also
+holds per-machine settings). After editing `hooks.json`, re-run `setup.sh`.
+
+---
+
 That's it! Give me a call if anything goes wrong.
