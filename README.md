@@ -87,7 +87,7 @@ Every tmux window running Claude Code shows a short name for what that
 session is about and an icon for whether Claude is busy or waiting on you:
 
 ```
-0 ○ Tmux tab labels | 1 ● Fix login bug | 2 zsh
+0 Tmux tab labels ○ | 1 Fix login bug ● | 2 zsh
 ```
 
 - **○ (palenight blue)** — Claude is working.
