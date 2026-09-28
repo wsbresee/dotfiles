@@ -91,7 +91,7 @@ session is about and an icon for whether Claude is busy or waiting on you:
 ```
 
 - **○ (palenight blue)** — Claude is working.
-- **● (palenight green)** — Claude is finished and waiting for you: it ended
+- **● (palenight red)** — Claude is finished and waiting for you: it ended
   its turn, wants a permission answer, or hit an error.
 
 The name is Claude Code's own session title (the one it puts in the terminal
